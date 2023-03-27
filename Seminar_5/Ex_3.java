@@ -1,47 +1,69 @@
 package Seminars.Seminar_5;
 
+import java.util.Arrays;
+
 public class Ex_3 {
-    static int[] chessboard = { 0, 0, 0, 0, 0, 0, 0, 0 };
-    static int index = 0;
-    static int version = 0;
 
-    public static void main(String[] args) {
+    private static boolean isSafe(char[][] mat, int r, int c) {
 
-        do {
-            if (checking()) {
-                if (index == 7) {
-                    System.out.println(version++ + " [0]=" + chessboard[0] + " [1]=" + chessboard[1] + " [2]="
-                            + chessboard[2] + " [3]=" + chessboard[3] + " [4]=" + chessboard[4] + " [5]="
-                            + chessboard[5] + " [6]=" + chessboard[6] + " [7]=" + chessboard[7]);
-                    chessboard[index]++;
-                } else {
-                    index++;
-                }
-            } else {
-                chessboard[index]++;
+        for (int i = 0; i < r; i++) {
+            if (mat[i][c] == 'Q') {
+                return false;
             }
-        } while (chessboard[0] < 8);
-    }
-
-    static boolean checking() {
-        int i;
-
-        if (index == 0) {
-            return true;
         }
 
-        if (chessboard[index] > 7) {
-            chessboard[index] = 0;
-            index--;
-            return false;
+        for (int i = r, j = c; i >= 0 && j >= 0; i--, j--) {
+            if (mat[i][j] == 'Q') {
+                return false;
+            }
         }
 
-        for (i = 0; i < index; i++) {
-            if ((chessboard[index] == chessboard[i]) | ((Math.abs(chessboard[index] - chessboard[i])) == (index - i))) {
+        for (int i = r, j = c; i >= 0 && j < mat.length; i--, j++) {
+            if (mat[i][j] == 'Q') {
                 return false;
             }
         }
 
         return true;
+    }
+
+    private static void printSolution(char[][] mat) {
+        for (char[] chars : mat) {
+            System.out.println(Arrays.toString(chars).replaceAll(",", ""));
+        }
+        System.out.println();
+    }
+
+    private static void nQueen(char[][] mat, int r) {
+
+        if (r == mat.length) {
+            printSolution(mat);
+            return;
+        }
+
+        for (int i = 0; i < mat.length; i++) {
+
+            if (isSafe(mat, r, i)) {
+
+                mat[r][i] = 'Q';
+
+                nQueen(mat, r + 1);
+
+                mat[r][i] = '–';
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+
+        int N = 8;
+
+        char[][] mat = new char[N][N];
+
+        for (int i = 0; i < N; i++) {
+            Arrays.fill(mat[i], '–');
+        }
+
+        nQueen(mat, 0);
     }
 }
